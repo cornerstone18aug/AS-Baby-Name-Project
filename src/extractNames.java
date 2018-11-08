@@ -1,9 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,33 +16,38 @@ public class extractNames {
         Matcher matcherNameAndRank = patternNameAndRank.matcher(readFile);
 
 
-        HashMap<String, String> hashMap = new HashMap<>();
+        Map<String, String> map_babynames = new HashMap<>();
         List<String> listYear = new ArrayList<>();
-        List<String> listRank = new ArrayList<>();
-        List<String> listName = new ArrayList<>();
         while (matcherYear.find()) {
             listYear.add(matcherYear.group(1));
         }
 
         while (matcherNameAndRank.find()) {
-//            listRank.add(matcherNameAndRank.group(1));
-//            listName.add(matcherNameAndRank.group(2) + matcherNameAndRank.group(3));
-            hashMap.put(matcherNameAndRank.group(1), matcherNameAndRank.group(2) + matcherNameAndRank.group(3));
+            map_babynames.put(matcherNameAndRank.group(1), matcherNameAndRank.group(2) + matcherNameAndRank.group(3));
         }
 
-        for(Map.Entry<String, String> entry : hashMap.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            System.out.println(key + value);
-            // do what you have to do here
-            // In your case, another loop.
-        }    }
+        List<Map.Entry<String, String>> list_babynames = new ArrayList<Map.Entry<String, String>>(map_babynames.entrySet());
+        Collections.sort(list_babynames, new Comparator<Map.Entry<String, String>>() {
+            public int compare(Map.Entry<String, String> obj1, Map.Entry<String, String> obj2) {
+                return obj1.getValue().compareTo(obj2.getValue());
+            }
+        });
+
+        for (Map.Entry<String, String> babyname : list_babynames) {
+            System.out.println(babyname.getKey() + " : " + babyname.getValue());
+        }
+    }
+
+//        for(Map.Entry<String, String> entry : hashMap.entrySet()) {
+//            String key = entry.getKey();
+//            String value = entry.getValue();
+//            System.out.println(key + value);
+//        }    }
 
     private static String readFile() {
 
         try {
             FileReader fileReader = new FileReader("src/babynames/baby1990.html");
-//            FileInputStream fstream = new FileInputStream("src/Baby/babynames/baby1990.html");
             BufferedReader br = new BufferedReader(fileReader);
             String strLine = "";
             for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -53,7 +55,6 @@ public class extractNames {
             }
             fileReader.close();
             br.close();
-//            fstream.close();
             return strLine;
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
