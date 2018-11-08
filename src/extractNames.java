@@ -34,7 +34,8 @@ public class extractNames {
         });
 
         for (Map.Entry<String, String> babyname : list_babynames) {
-            System.out.println(babyname.getKey() + " : " + babyname.getValue());
+            System.out.printf("%3s:  %s", babyname.getKey(), babyname.getValue());
+            System.out.println();
         }
     }
 
