@@ -1,29 +1,29 @@
-import java.io.*;
-
 public class extractNames {
 
     public static void main(String[] args) {
-
-        System.out.println(Readfile());
-
+        String s = readFile();
+        System.out.println(s);
     }
 
-    public static String Readfile(){
-        try{
-            FileInputStream fstream = new FileInputStream("src/babynames/baby1990.html");
-            InputStreamReader in = new InputStreamReader(fstream);
-            BufferedReader br = new BufferedReader(in);
-            String strLine = null;
-            while (br.readLine() != null)   {
-                strLine+=br.readLine();
+    private static String readFile() {
+
+        try {
+            FileReader fileReader = new FileReader("src/Baby/babynames/baby1990.html");
+//            FileInputStream fstream = new FileInputStream("src/Baby/babynames/baby1990.html");
+            BufferedReader br = new BufferedReader(fileReader);
+            String strLine = "";
+            for (String line = br.readLine(); line != null; line = br.readLine()) {
+                strLine += line;
             }
-            in.close();
+            fileReader.close();
+            br.close();
+//            fstream.close();
             return strLine;
-        }catch (Exception e){
+        } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
             return "";
         }
-
     }
+
 }
 
