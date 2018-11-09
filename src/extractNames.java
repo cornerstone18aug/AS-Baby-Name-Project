@@ -1,12 +1,11 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class extractNames {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         for (int i=0; i<=9; i++) {
             String readFile = readFile(i);
 
@@ -23,16 +22,27 @@ public class extractNames {
             }
 
             while (matcherNameAndRank.find()) {
-                map_babynames.put(matcherNameAndRank.group(1), matcherNameAndRank.group(2) + matcherNameAndRank.group(3));
+                map_babynames.put(matcherNameAndRank.group(1), matcherNameAndRank.group(2) + " " + matcherNameAndRank.group(3));
             }
 
             List<Map.Entry<String, String>> list_babynames = new ArrayList<Map.Entry<String, String>>(map_babynames.entrySet());
             Collections.sort(list_babynames, (obj1, obj2) -> obj1.getValue().compareTo(obj2.getValue()));
 
             System.out.println(listYear);
-            for (Map.Entry<String, String> babyname : list_babynames) {
-                System.out.printf("%3s:  %s", babyname.getKey(), babyname.getValue());
-                System.out.println();
+            FileWriter newfile = null;
+            try {
+                newfile = new FileWriter("src/babynames/baby" + listYear + "html.summary");
+                newfile.write(listYear + "\n");
+                for (Map.Entry<String, String> babyname : list_babynames) {
+                    newfile.write(babyname.getValue() + " " + babyname.getKey() + "\n");
+                    System.out.printf("%3s:  %s", babyname.getKey(), babyname.getValue());
+                    System.out.println();
+                }
+                newfile.flush();
+            }catch (IOException e) {
+                System.out.println(e.getMessage());
+            } finally {
+                newfile.close();
             }
         }
     }
@@ -40,7 +50,6 @@ public class extractNames {
     private static String readFile(int i) {
 
             try {
-                ArrayList<String> fileList = new ArrayList<>();
                 String year = Integer.toString(1990 + (i * 2));
                     FileReader fileReader = new FileReader("src/babynames/baby" + year + ".html");
                     BufferedReader br = new BufferedReader(fileReader);
